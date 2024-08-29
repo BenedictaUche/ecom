@@ -1,77 +1,88 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { db, storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { Product } from '@/lib/types/products';
 
 interface ProductFormProps {
-  onSubmit: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void;
-  initialValues?: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>;
+  product?: Product;
+  onClose: () => void;
 }
 
-const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
-  const [name, setName] = useState(initialValues?.name || '');
-  const [description, setDescription] = useState(initialValues?.description || '');
-  const [price, setPrice] = useState(initialValues?.price || 0);
-  const [category, setCategory] = useState(initialValues?.category || '');
-  const [imageUrl, setImageUrl] = useState(initialValues?.imageUrl || '');
 
-  const handleSubmit = (e: React.FormEvent) => {
+const ProductForm: React.FC<ProductFormProps> = ({ product, onClose }) => {
+  const [name, setName] = useState(product?.name || '');
+  const [description, setDescription] = useState(product?.description || '');
+  const [price, setPrice] = useState(product?.price || 0);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, description, price, category, imageUrl });
+    let imageUrl = product?.imageUrl || '';
+
+    if (imageFile) {
+      const storageRef = ref(storage, `products/${imageFile.name}`);
+      await uploadBytes(storageRef, imageFile);
+      imageUrl = await getDownloadURL(storageRef);
+    }
+
+    const productData = {
+      name,
+      description,
+      price,
+      imageUrl,
+    };
+
+    if (product) {
+      const productRef = doc(db, 'products', product.id);
+      await updateDoc(productRef, productData);
+    } else {
+      await addDoc(collection(db, 'products'), productData);
+    }
+
+    // onClose();
+    // router.push('/');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit}>
       <div>
-        <label className="block text-sm font-medium text-gray-700">Product Name</label>
+        <label>Name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label>Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-        ></textarea>
+        />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700">Price</label>
+        <label>Price</label>
         <input
           type="number"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
           required
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700">Category</label>
+        <label>Image</label>
         <input
-          type="text"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          type="file"
+          onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)}
         />
       </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Image URL</label>
-        <input
-          type="url"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          required
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">
-        Save Product
-      </button>
+      <button type="submit">{product ? 'Update' : 'Add'} Product</button>
     </form>
   );
 };

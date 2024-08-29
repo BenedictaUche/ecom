@@ -5,6 +5,7 @@ import HEAD from "next/head";
 import { Toaster } from "@/components/ui/toaster";
 import NextTopLoader from "nextjs-toploader";
 import { NextPage } from "next";
+import { CartProvider } from '@/context/CartContext';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -33,7 +34,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         shadow="0 0 10px rgba(0, 0, 0, 0.3)"
       />
       <Toaster />
+      <CartProvider>
       {getLayout(<Component {...pageProps} />)}
+      </CartProvider>
     </>
   )
 
