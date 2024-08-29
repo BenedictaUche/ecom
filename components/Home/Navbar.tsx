@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, UserRound, ShoppingBasket, AlignJustify } from 'lucide-react';
+import Link from 'next/link';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,12 +33,15 @@ const Navbar = () => {
           isOpen ? 'block' : 'hidden'
         } md:flex justify-center items-center space-x-8 py-4 md:py-0 md:flex-row`}
       >
-        <a href="#" className="text-gray-800 hover:text-red-600">
+        <Link href="#" className="text-gray-800 hover:text-red-600">
           Shop Collection
-        </a>
-        <a href="#" className="text-gray-800 hover:text-red-600">
+        </Link>
+        <Link href="/producfs/add-product" className="text-gray-800 hover:text-red-600">
+          Add or Edit
+        </Link>
+        <Link href="#" className="text-gray-800 hover:text-red-600">
           Contact
-        </a>
+        </Link>
       </nav>
     </header>
   );

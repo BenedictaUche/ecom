@@ -19,13 +19,13 @@
 
   @font-face {
     font-family: 'BrandonGrotesque-italic';
-    src: url('/fonts/Brandon_Grot_thin_italic.otf') ;
+    src: url('/fonts/Brandon_Grot_medium_italic.otf') ;
     font-weight: light;
     font-style: italic;
   }
 
   body {
-    font-family: 'Brandon Grotesque', sans-serif;
+    font-family: 'BrandonGrotesque-Regular', sans-serif;
   }
 
   h1 {
