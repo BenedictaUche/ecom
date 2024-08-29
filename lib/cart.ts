@@ -32,11 +32,13 @@ export const addToCart = async (productId: string, quantity: number, productName
 
 // retrieve cart items
 export const getCartItems = async () => {
-  const cartRef = doc(db, 'cart', 'cartId');
+  const cartId = "cartId";
+  const cartRef = doc(db, 'cart', cartId);
   const cartSnap = await getDoc(cartRef);
 
   if (cartSnap.exists()) {
-    return cartSnap.data().items;
+    return cartSnap.data()?.items || [];
+  } else {
+    return [];
   }
-  return [];
 };

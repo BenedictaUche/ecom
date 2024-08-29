@@ -66,9 +66,9 @@ const HomePage = () => {
 
               <div className="flex gap-4 overflow-x-auto no-scrollbar">
                 {products.map((product, index) => (
-                  <div key={index} className="w-1/3 flex-shrink-0 cursor-pointer" onClick={() => handleDisplayProductDetails(product.id)}>
+                  <div key={index} className="w-1/3 flex-shrink-0 cursor-pointer" >
                     <div className="flex flex-col items-center">
-                      <div className="w-64 h-64 relative">
+                      <div className="w-64 h-64 relative" onClick={() => handleDisplayProductDetails(product.id)}>
                         <Image
                           src={product.imageUrl}
                           alt={product.name}
