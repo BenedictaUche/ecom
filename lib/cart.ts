@@ -2,7 +2,7 @@ import { doc, setDoc, updateDoc, arrayUnion, getDoc, collection, getDocs } from 
 import { db } from './firebase';
 
 // to add a product to the cart
-export const addToCart = async (productId: string, quantity: number, productName: string, productPrice: number) => {
+export const addToCart = async (productId: string, quantity: number, productName: string, productPrice: number, imageUrl: string) => {
   const cartRef = doc(db, 'cart', 'cartId');
   const cartSnap = await getDoc(cartRef);
 
@@ -19,13 +19,13 @@ export const addToCart = async (productId: string, quantity: number, productName
     } else {
       // Add new item to the cart
       await updateDoc(cartRef, {
-        items: arrayUnion({ productId, quantity, productName, productPrice }),
+        items: arrayUnion({ productId, quantity, productName, productPrice, imageUrl }),
       });
     }
   } else {
     // create new cart
     await setDoc(cartRef, {
-      items: [{ productId, quantity, productName, productPrice }],
+      items: [{ productId, quantity, productName, productPrice, imageUrl }],
     });
   }
 };

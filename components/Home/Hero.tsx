@@ -9,11 +9,19 @@ import {
 } from "@/components/ui/carousel";
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
+import { Button } from "../ui/button";
+import { useRouter } from "next/router";
+
 
 const Hero = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
+  const router = useRouter();
+
+  const handleChangeRoute = () => {
+    router.push('/producfs');
+  }
 
   useEffect(() => {
     if (!api) {
@@ -44,7 +52,7 @@ const Hero = () => {
                   />
                   <CardContent className="absolute bottom-0 top-0 left-0 right-0 flex flex-col items-center justify-center p-6 bg-opacity-50 bg-white">
                     <h2 className="text-4xl text-gray-800">NEW COLLECTION</h2>
-                    <button className="mt-4 px-6 py-2 bg-black text-white">Shop Now</button>
+                    <Button className="mt-4 px-6 py-2 bg-black text-white hover:bg-black/55" onClick={handleChangeRoute}>Shop Now</Button>
                   </CardContent>
                 </Card>
               </CarouselItem>

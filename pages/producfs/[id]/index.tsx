@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import CustomButton from "@/components/CustomButton";
 import { addToCart } from "@/lib/cart";
 import { Input } from "@/components/ui/input";
+import Breadcrumb from "@/components/Breadcrumb";
+
 
 const ProductDetails = () => {
   const [product, setProduct] = useState<Product | null>(null);
@@ -38,11 +40,12 @@ const ProductDetails = () => {
     productId: string,
     quantity: number,
     productName: string,
-    productPrice: number
+    productPrice: number,
+    imageUrl: string
   ) => {
     setLoading(true);
     try {
-      await addToCart(productId, quantity, productName, productPrice);
+      await addToCart(productId, quantity, productName, productPrice, imageUrl);
     } catch (error) {
       console.error("Error adding to cart:", error);
     } finally {
@@ -58,6 +61,10 @@ const ProductDetails = () => {
     <>
       <Navbar />
       <div className="max-w-6xl mx-auto py-8 px-4">
+
+         <Breadcrumb items={[{ href: "/", label: "Home" }, { href: "/products", label: "Products" }]} currentPage={
+          product.name
+         } />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Product Image */}
           <div className="flex justify-center items-center">
@@ -76,7 +83,7 @@ const ProductDetails = () => {
             <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
             <p className="text-gray-500 mb-2">SKU: {product.id}</p>
             <p className="text-2xl font-semibold mb-6">
-              ${product.price.toFixed(2)}
+            ₦ {product.price.toFixed(2)}
             </p>
 
             <div className="mb-4">
@@ -119,7 +126,8 @@ const ProductDetails = () => {
                     product.id,
                     quantity,
                     product.name,
-                    product.price
+                    product.price,
+                    product.imageUrl
                   )
                 }
               >
