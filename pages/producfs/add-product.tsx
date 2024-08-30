@@ -1,29 +1,17 @@
-import { useRouter } from 'next/router';
-import { addProduct } from '@/utils/localStorage';
-import ProductForm from '@/components/Forms/ProductForm';
-import { Product } from '@/lib/types/products';
-import { v4 as uuidv4 } from 'uuid';
+import React from 'react'
+import Navbar from '@/components/Home/Navbar'
+import Footer from '@/components/Footer'
 
-const AddProductPage = () => {
-  const router = useRouter();
-
-  const handleAddProduct = (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newProduct = {
-      ...product,
-      id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    addProduct(newProduct);
-    router.push('/');
-  };
-
+const AddCollection = () => {
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Add Product</h1>
-      <ProductForm onSubmit={handleAddProduct} />
-    </div>
-  );
-};
+    <>
+      <Navbar />
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-4xl font-bold">Add Collection</h1>
+      </div>
+      <Footer />
+    </>
+  )
+}
 
-export default AddProductPage;
+export default AddCollection
