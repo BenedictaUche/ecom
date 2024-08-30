@@ -32,8 +32,12 @@ const HomePage = () => {
   };
 
   const handleDisplayProductDetails = (productId: string) => {
-    route.push(`/products/${productId}`);
+    route.push(`/producfs/${productId}`);
   };
+
+  const handleChangeRoute = () => {
+    route.push('/producfs');
+  }
 
   return (
     <>
@@ -81,7 +85,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="text-center mt-8">
-            <Button className="px-12 py-2 bg-black text-white w-fit hover:bg-black/50">
+            <Button className="px-12 py-2 bg-black text-white w-fit hover:bg-black/50" onClick={handleChangeRoute}>
               Shop All
             </Button>
           </div>

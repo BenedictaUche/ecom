@@ -12,9 +12,10 @@ const addProductSchema = z.object({
 });
 
 type ProductFormProps = {
-  product: Product;
+  product?: Product;
   onSubmit: (values: Product) => void;
 };
+
 
 const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
   const form = useForm<z.infer<typeof addProductSchema>>({
@@ -31,7 +32,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
       id: "",
       quantity: 0,
       category: "",
-      imageUrl: "",
+      imageUrl: values.image || "",
       ...values,
     };
     onSubmit(product);
@@ -49,7 +50,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
       </div>
       <div>
         <label>Price</label>
-        <input type="" {...form.register('price')} placeholder="Price" />
+        <input type="number" {...form.register('price')} placeholder="Price" />
       </div>
       <div>
         <label>Image</label>
@@ -59,5 +60,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
     </form>
   );
 };
+
 
 export default ProductForm;

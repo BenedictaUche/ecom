@@ -25,7 +25,7 @@ export const NoDataCard = ({
         </div>
         <h2 className="text-2xl">{header}</h2>
         <p className="py-4">{message}</p>
-        <Button type="button" onClick={handleClick} className='bg-[#A85334] sm:text-md text-lg'>
+        <Button type="button" onClick={handleClick} className='hover:bg-black/55 bg-black text-white sm:text-md text-lg'>
           {buttonText}
         </Button>
       </div>

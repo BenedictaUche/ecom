@@ -1,17 +1,35 @@
-import React from 'react'
-import Navbar from '@/components/Home/Navbar'
-import Footer from '@/components/Footer'
+import { useRouter } from 'next/router';
+import { addToCart } from '@/lib/cart';
+import ProductForm from '@/components/Forms/ProductForm';
+import { Product } from '@/lib/types/products';
+import { v4 as uuidv4 } from 'uuid';
+import Navbar from '@/components/Home/Navbar';
+import Footer from '@/components/Footer';
 
-const AddCollection = () => {
+const AddProductPage = () => {
+  const router = useRouter();
+
+  const handleAddProduct = (product: Product) => {
+    const newProduct = {
+      ...product,
+      id: uuidv4(),
+    };
+
+
+    const { id, name, price, imageUrl } = newProduct;
+    addToCart(id, 1, name, price, imageUrl);
+  };
+
   return (
     <>
       <Navbar />
-      <div className="flex flex-col items-center justify-center h-screen">
-        <h1 className="text-4xl font-bold">Add Collection</h1>
+      <div className="container mx-auto py-8">
+        <h1 className="text-3xl font-bold mb-8">Add Product</h1>
+        <ProductForm onSubmit={handleAddProduct} />
       </div>
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default AddCollection
+export default AddProductPage;
