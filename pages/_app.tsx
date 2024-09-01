@@ -22,6 +22,8 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       <HEAD>
         <title>ecom</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Explore the best products on our platform. Quality assured." />
+        <meta name="keywords" content="ecommerce, products, online shopping" />
       </HEAD>
       <NextTopLoader
         color="#29D"

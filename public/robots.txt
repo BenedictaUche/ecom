@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://ecom-five-woad.vercel.app
+
+# Sitemaps
+Sitemap: https://ecom-five-woad.vercel.app/sitemap.xml
