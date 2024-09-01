@@ -20,8 +20,8 @@ Before you begin, make sure you have the following installed:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/ecommerce-platform.git
-   cd ecommerce-platform
+   git clone https://github.com/BenedictaUche/ecom.git
+   cd ecom
    ```
 
 2. **Install dependencies:**
