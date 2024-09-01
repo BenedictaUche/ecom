@@ -8,19 +8,25 @@ import { Product } from '@/lib/types/products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { NoDataCard } from '@/components/NoDataCard';
 import { useRouter } from 'next/router';
+import CustomButton from '@/components/CustomButton';
+import { useToast } from '@/components/ui/use-toast';
+import { addToCart } from '@/lib/cart';
+import { Pen } from 'lucide-react';
 
 const AllProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedPrice, setSelectedPrice] = useState('All');
   const [selectedSize, setSelectedSize] = useState('All');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isNowLoading, setIsNowLoading] = useState(true);
+  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setIsLoading(true);
+        setIsNowLoading(true);
         const querySnapshot = await getDocs(collection(db, 'products'));
         const fetchedProducts = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Product[];
         setProducts(fetchedProducts);
@@ -28,7 +34,7 @@ const AllProducts = () => {
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
-        setIsLoading(false);
+        setIsNowLoading(false);
       }
     };
     fetchProducts();
@@ -38,21 +44,36 @@ const AllProducts = () => {
     let tempProducts = [...products];
 
     if (selectedPrice !== 'All') {
-      // Filter by price
       tempProducts = tempProducts.filter(product => product.price <= parseFloat(selectedPrice));
     }
-
-    // Uncomment and adjust this block when the 'size' filter is needed
-    // if (selectedSize !== 'All') {
-    //   // Filter by size
-    //   tempProducts = tempProducts.filter(product => product.size.includes(selectedSize));
-    // }
 
     setFilteredProducts(tempProducts);
   };
 
   const handleChangeRoute = () => {
-    router.push('/add-product');
+    router.push('/producfs/Collection');
+  };
+
+  const handleAddToCart = async (
+    productId: string,
+    quantity: number,
+    productName: string,
+    productPrice: number,
+    imageUrl: string
+  ) => {
+    setLoading((prev) => ({ ...prev, [productId]: true }));
+    try {
+      await addToCart(productId, quantity, productName, productPrice, imageUrl);
+      toast({
+        title: "Added to cart",
+        description: `${productName} has been added to your cart`,
+        variant: "default"
+      });
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, [productId]: false }));
+    }
   };
 
   useEffect(() => {
@@ -64,7 +85,6 @@ const AllProducts = () => {
       <Navbar />
       <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="grid grid-cols-4 gap-8">
-          {/* Sidebar for Filters */}
           <div>
             <h2 className="text-lg font-medium mb-4">Filter by</h2>
             <div className="mb-4">
@@ -84,7 +104,7 @@ const AllProducts = () => {
           </div>
 
           <div className="col-span-3">
-            {isLoading ? (
+            {isNowLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 <Skeleton className='h-56 w-full bg-slate-300 rounded-[6px]' />
                 <Skeleton className='h-56 w-full bg-slate-300 rounded-[6px]' />
@@ -112,8 +132,15 @@ const AllProducts = () => {
                       />
                     </div>
                     <h2 className="mt-2 text-lg font-medium">{product.name}</h2>
-                    <p className="text-gray-500">₦ {product.price.toFixed(2)}</p>
-                    <button className="mt-2 bg-black text-white w-full py-2">Add to Cart</button>
+                    <p className="text-gray-500">₦ {product.price}</p>
+                    <CustomButton
+                      className="mt-2 bg-black hover:bg-black/55 text-white w-full py-2"
+                      onClick={() => handleAddToCart(product.id, 1, product.name, product.price, product.imageUrl)}
+                      isLoading={loading[product.id] || false}
+                      disabled={loading[product.id] || false}
+                    >
+                      Add to Cart
+                    </CustomButton>
                   </div>
                 ))}
               </div>

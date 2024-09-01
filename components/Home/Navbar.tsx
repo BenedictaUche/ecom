@@ -38,7 +38,7 @@ const Navbar = () => {
         <Link href="/producfs" className="text-gray-800 hover:text-red-600">
           Shop Collection
         </Link>
-        <Link href="/producfs/add-product" className="text-gray-800 hover:text-red-600">
+        <Link href="/producfs/Collection" className="text-gray-800 hover:text-red-600">
           Add your collection
         </Link>
         <Link href="#" className="text-gray-800 hover:text-red-600">

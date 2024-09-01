@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Product } from "@/lib/types/products";
@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { Input } from "../ui/input";
 import CustomButton from "../CustomButton";
+import { useToast } from "../ui/use-toast";
 
 type ModalProps = {
   className?: string;
@@ -23,10 +24,24 @@ const CartModal = ({
   product,
 }: ModalProps) => {
   const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleAddToCart = () => {
-    addToCart(product.id, 1, product.name, product.price, product.imageUrl);
+  const handleAddToCart = async () => {
+    setIsLoading(true);
+    await addToCart(product.id, quantity, product.name, product.price, product.imageUrl);
+    setIsLoading(false);
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart`,
+      variant: "default",
+    });
     setOpen(false);
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuantity(Number(e.target.value));
   };
 
   return (
@@ -46,43 +61,28 @@ const CartModal = ({
             <div className="flex flex-col space-y-8 w-1/2">
               <div className="flex flex-col items-start space-y-4">
                 <h2 className="text-lg font-semibold">{product.name}</h2>
-                <p className="text-lg text-gray-500">
-                ₦ {product.price.toFixed(2)}
-                </p>
+                <p className="text-lg text-gray-500">₦ {product.price}</p>
               </div>
               <div className="flex flex-col space-y-8">
-                <div className="flex items-center space-x-2">
-                  <span className="text-gray-500">Color:</span>
-                  <div className="flex space-x-2">
-                    <div className="w-6 h-6 rounded-full bg-green-500 border-2 border-gray-200"></div>
-                    <div className="w-6 h-6 rounded-full bg-orange-500 border-2 border-gray-200"></div>
-                  </div>
-                </div>
-                <div className="flex flex-col space-y-4">
-                  <span className="text-gray-500">Size:</span>
-                  <select className="border border-gray-300 rounded-md p-2 w-full">
-                    <option>Select</option>
-                    <option>Small</option>
-                    <option>Medium</option>
-                    <option>Large</option>
-                  </select>
-                </div>
                 <div className="flex flex-col space-y-4">
                   <span className="text-lg">Quantity:</span>
                   <Input
                     type="number"
                     min="1"
-                    defaultValue="1"
+                    value={quantity}
+                    onChange={handleQuantityChange}
                     className="w-12 border border-gray-300 p-2 text-center rounded-md"
                   />
                 </div>
               </div>
-              <Button
+              <CustomButton
                 onClick={handleAddToCart}
                 className="w-full bg-black text-white py-2 rounded-md hover:bg-black/55"
+                isLoading={isLoading}
+                disabled={isLoading}
               >
                 Add to Cart
-              </Button>
+              </CustomButton>
             </div>
           </div>
         </DialogHeader>

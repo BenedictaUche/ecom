@@ -10,6 +10,7 @@ import CustomButton from "@/components/CustomButton";
 import { addToCart } from "@/lib/cart";
 import { Input } from "@/components/ui/input";
 import Breadcrumb from "@/components/Breadcrumb";
+import { useToast } from "@/components/ui/use-toast";
 
 
 const ProductDetails = () => {
@@ -18,6 +19,9 @@ const ProductDetails = () => {
   const router = useRouter();
   const { id } = router.query;
   const [quantity, setQuantity] = useState(1);
+
+  const {toast} = useToast()
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -50,6 +54,11 @@ const ProductDetails = () => {
       console.error("Error adding to cart:", error);
     } finally {
       setLoading(false);
+      toast({
+        title: "Added to cart",
+        description: `${productName} has been added to your cart`,
+        variant: "default"
+      })
     }
   };
 
