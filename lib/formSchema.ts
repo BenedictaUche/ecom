@@ -20,3 +20,10 @@ export const addProductSchema = z.object({
     //   message: "Quantity must be a non-negative number",
     // }),
 })
+
+export const productSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
+  price: z.number().min(0, 'Price must be a positive number'),
+  imageUrl: z.string().optional(),
+});

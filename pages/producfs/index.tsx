@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Home/Navbar';
 import Footer from '@/components/Footer';
 import { db } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, AddPrefixToKeys } from 'firebase/firestore';
 import Image from 'next/image';
 import { Product } from '@/lib/types/products';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,14 +12,16 @@ import CustomButton from '@/components/CustomButton';
 import { useToast } from '@/components/ui/use-toast';
 import { addToCart } from '@/lib/cart';
 import { Pen } from 'lucide-react';
+import EditProductModal from '@/components/Modals/EditProductModal';
 
 const AllProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedPrice, setSelectedPrice] = useState('All');
-  const [selectedSize, setSelectedSize] = useState('All');
   const [isNowLoading, setIsNowLoading] = useState(true);
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -50,10 +52,6 @@ const AllProducts = () => {
     setFilteredProducts(tempProducts);
   };
 
-  const handleChangeRoute = () => {
-    router.push('/producfs/Collection');
-  };
-
   const handleAddToCart = async (
     productId: string,
     quantity: number,
@@ -76,15 +74,41 @@ const AllProducts = () => {
     }
   };
 
+  const handleEditProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveEditProduct = async (updatedProduct: Product) => {
+    try {
+      const productRef = doc(db, 'products', updatedProduct.id);
+      await updateDoc(productRef, updatedProduct as unknown as { [x: string]: any; } & AddPrefixToKeys<string, any>);
+      setProducts(prevProducts =>
+        prevProducts.map(product =>
+          product.id === updatedProduct.id ? updatedProduct : product
+        )
+      );
+      setIsModalOpen(false);
+      toast({
+        title: "Product Updated",
+        description: `${updatedProduct.name} has been updated`,
+        variant: "default"
+      });
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
+  };
+
   useEffect(() => {
     handleFilter();
-  }, [selectedPrice, selectedSize, products]);
+  }, [selectedPrice, products]);
 
   return (
     <>
       <Navbar />
       <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="grid grid-cols-4 gap-8">
+          {/* Sidebar */}
           <div>
             <h2 className="text-lg font-medium mb-4">Filter by</h2>
             <div className="mb-4">
@@ -103,6 +127,7 @@ const AllProducts = () => {
             </div>
           </div>
 
+          {/* Products */}
           <div className="col-span-3">
             {isNowLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -117,7 +142,6 @@ const AllProducts = () => {
                 header='No products to show'
                 message='You have not added any product'
                 buttonText='Add Product'
-                handleClick={handleChangeRoute}
               />
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -131,7 +155,14 @@ const AllProducts = () => {
                         objectFit="cover"
                       />
                     </div>
-                    <h2 className="mt-2 text-lg font-medium">{product.name}</h2>
+                    <h2 className="mt-2 text-lg font-medium flex items-center gap-8">
+                      {product.name}
+                      <Pen
+                        size={18}
+                        className='cursor-pointer'
+                        onClick={() => handleEditProduct(product)}
+                      />
+                    </h2>
                     <p className="text-gray-500">₦ {product.price}</p>
                     <CustomButton
                       className="mt-2 bg-black hover:bg-black/55 text-white w-full py-2"
@@ -149,6 +180,16 @@ const AllProducts = () => {
         </div>
       </div>
       <Footer />
+
+      {/* Edit Product Modal */}
+      {selectedProduct && (
+        <EditProductModal
+          open={isModalOpen}
+          setOpen={setIsModalOpen}
+          product={selectedProduct}
+          onSave={handleSaveEditProduct}
+        />
+      )}
     </>
   );
 };

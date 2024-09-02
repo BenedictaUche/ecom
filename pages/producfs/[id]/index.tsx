@@ -92,7 +92,7 @@ const ProductDetails = () => {
             <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
             <p className="text-gray-500 mb-2">SKU: {product.id}</p>
             <p className="text-2xl font-semibold mb-6">
-            ₦ {product.price.toFixed(2)}
+            ₦ {product.price}
             </p>
 
             <div className="mb-4">
