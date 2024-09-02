@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Product } from '@/lib/types/products';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -60,10 +60,13 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, setOpen, prod
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTitle>
+
+        </DialogTitle>
       <DialogContent>
         <DialogHeader>
-          <h2 className="text-xl font-semibold">Edit Product</h2>
-        </DialogHeader>
+        <span className="text-xl font-semibold">Edit Product</span>
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-4">
             <Label htmlFor="name" className="block text-sm font-medium">
@@ -121,6 +124,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, setOpen, prod
             </CustomButton>
           </div>
         </form>
+        </DialogHeader>
       </DialogContent>
     </Dialog>
   );

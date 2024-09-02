@@ -106,8 +106,8 @@ const AllProducts = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto py-8 px-4">
-        <div className="grid grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div>
             <h2 className="text-lg font-medium mb-4">Filter by</h2>
@@ -116,7 +116,7 @@ const AllProducts = () => {
               <select
                 value={selectedPrice}
                 onChange={(e) => setSelectedPrice(e.target.value)}
-                className="mt-1 block w-full border-gray-300"
+                className="mt-1 block w-full border-gray-300 rounded-md"
               >
                 <option value="All">All</option>
                 <option value="1000">₦ 1000 and below</option>
@@ -128,13 +128,13 @@ const AllProducts = () => {
           </div>
 
           {/* Products */}
-          <div className="col-span-3">
+          <div className="lg:col-span-3">
             {isNowLoading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                <Skeleton className='h-56 w-full bg-slate-300 rounded-[6px]' />
-                <Skeleton className='h-56 w-full bg-slate-300 rounded-[6px]' />
-                <Skeleton className='h-56 w-full bg-slate-300 rounded-[6px]' />
-                <Skeleton className='h-56 w-full bg-slate-300 rounded-[6px]' />
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <Skeleton className='h-56 w-full bg-slate-300 rounded-md' />
+                <Skeleton className='h-56 w-full bg-slate-300 rounded-md' />
+                <Skeleton className='h-56 w-full bg-slate-300 rounded-md' />
+                <Skeleton className='h-56 w-full bg-slate-300 rounded-md' />
               </div>
             ) : filteredProducts.length === 0 ? (
               <NoDataCard
@@ -144,18 +144,19 @@ const AllProducts = () => {
                 buttonText='Add Product'
               />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {filteredProducts.map((product) => (
-                  <div key={product.id} className="border p-4">
+                  <div key={product.id} className="border p-4 rounded-md flex flex-col justify-between">
                     <div className="relative h-40 w-full">
                       <Image
                         src={product.imageUrl}
                         alt={product.name}
                         layout="fill"
                         objectFit="cover"
+                        className="rounded-md"
                       />
                     </div>
-                    <h2 className="mt-2 text-lg font-medium flex items-center gap-8">
+                    <h2 className="mt-2 text-lg font-medium flex items-center gap-4">
                       {product.name}
                       <Pen
                         size={18}
@@ -165,7 +166,7 @@ const AllProducts = () => {
                     </h2>
                     <p className="text-gray-500">₦ {product.price}</p>
                     <CustomButton
-                      className="mt-2 bg-black hover:bg-black/55 text-white w-full py-2"
+                      className="mt-2 bg-black hover:bg-black/55 text-white w-full py-2 rounded-md"
                       onClick={() => handleAddToCart(product.id, 1, product.name, product.price, product.imageUrl)}
                       isLoading={loading[product.id] || false}
                       disabled={loading[product.id] || false}

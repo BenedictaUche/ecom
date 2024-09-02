@@ -68,9 +68,9 @@ const CartPage = () => {
               cartItems.map((item) => (
                 <div
                   key={item.productId}
-                  className="flex items-center justify-between border-b pb-4 mb-4"
+                  className="flex flex-col md:flex-row items-center md:items-start justify-between border-b pb-4 mb-4"
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center md:w-1/2">
                     <div className="w-20 h-20 relative">
                       <Image
                         src={item.imageUrl}
@@ -92,36 +92,44 @@ const CartPage = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      className="border border-gray-300 px-2 py-1"
-                      onClick={() =>
-                        handleQuantityChange(item.productId, item.quantity - 1)
-                      }
-                    >
-                      -
-                    </button>
-                    <input
-                      type="text"
-                      className="w-10 text-center border border-gray-300"
-                      value={item.quantity}
-                      readOnly
-                    />
-                    <button
-                      className="border border-gray-300 px-2 py-1"
-                      onClick={() =>
-                        handleQuantityChange(item.productId, item.quantity + 1)
-                      }
-                    >
-                      +
-                    </button>
+                  <div className="flex items-center justify-between w-full md:w-auto mt-4 md:mt-0 space-y-2 md:space-y-0 md:space-x-2">
+                    <div className="flex items-center">
+                      <button
+                        className="border border-gray-300 px-2 py-1"
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.productId,
+                            item.quantity - 1
+                          )
+                        }
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        className="w-10 text-center border border-gray-300"
+                        value={item.quantity}
+                        readOnly
+                      />
+                      <button
+                        className="border border-gray-300 px-2 py-1"
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.productId,
+                            item.quantity + 1
+                          )
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-lg font-medium">
+                      ₦ {(item.productPrice * item.quantity).toFixed(2)}
+                    </p>
+                    <Button onClick={() => handleDeleteItem(item.productId)}>
+                      <Trash className="w-6 h-6 text-red-500" />
+                    </Button>
                   </div>
-                  <p className="text-lg font-medium">
-                    ₦ {(item.productPrice * item.quantity).toFixed(2)}
-                  </p>
-                  <Button onClick={() => handleDeleteItem(item.productId)}>
-                    <Trash className="w-6 h-6 text-red-500" />
-                  </Button>
                 </div>
               ))
             )}
